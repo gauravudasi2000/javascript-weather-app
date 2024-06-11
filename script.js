@@ -10,6 +10,7 @@ const humidity = document.querySelector(".humidity");
 const search = document.querySelector(".search button");
 const weather_img = document.querySelector(".weather-icon");
 const display_weather = document.querySelector(".weather");
+const error = document.querySelector(".error");
 
 ///input.hide;
 //console.log(input);
@@ -25,32 +26,37 @@ search.addEventListener("click", (evt) => {
 
 async function getWeatherUpdate(cityVal){
     let response = await fetch(BASE_URL + cityVal);
-    let data = await response.json();
-    console.log(data);
-    temperature.innerText = Math.floor(data.main.temp) + "°C";
-    city.innerText = data.name;
-    humidity.innerText = data.main.humidity + "%";
-    wind.innerText = data.wind.speed + "km/h";
+    if(response.status == 404){
+        display_weather.style.display = "none";
+        error.style.display = "block";
+    }else{
+        let data = await response.json();
+       // console.log(data);
+        temperature.innerText = Math.floor(data.main.temp) + "°C";
+        city.innerText = data.name;
+        humidity.innerText = data.main.humidity + "%";
+        wind.innerText = data.wind.speed + "km/h";
 
-    if(data.weather[0].main == "Clouds"){
-        weather_img.src = "images/clouds.png";
+        if(data.weather[0].main == "Clouds"){
+            weather_img.src = "images/clouds.png";
+        }
+        else if(data.weather[0].main == "Clear"){
+            weather_img.src = "images/clear.png";
+        }
+        else if(data.weather[0].main == "Drizzle"){
+            weather_img.src = "images/drizzle.png";
+        }
+        else if(data.weather[0].main == "Mist"){
+            weather_img.src = "images/mist.png";
+        }
+        else if(data.weather[0].main == "Rain"){
+            weather_img.src = "images/rain.png";
+        }
+        else if(data.weather[0].main == "Snow"){
+            weather_img.src = "images/snow.png";
+        }
+        display_weather.style.display = "block";
+        error.style.display = "none";
     }
-    else if(data.weather[0].main == "Clear"){
-        weather_img.src = "images/clear.png";
-    }
-    else if(data.weather[0].main == "Drizzle"){
-        weather_img.src = "images/drizzle.png";
-    }
-    else if(data.weather[0].main == "Mist"){
-        weather_img.src = "images/mist.png";
-    }
-    else if(data.weather[0].main == "Rain"){
-        weather_img.src = "images/rain.png";
-    }
-    else if(data.weather[0].main == "Snow"){
-        weather_img.src = "images/snow.png";
-    }
-    display_weather.style.display = "block"
-
 }
 
